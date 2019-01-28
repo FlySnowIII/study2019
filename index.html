@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<title>Document</title>
+<script>
+    "use strict";
+    function connectble() {
+    if (navigator.bluetooth == undefined) {
+        console.log("NG: These are no bluetooth");
+    } else {
+        // １．BLEデバイスをスキャンする
+        navigator.bluetooth
+        .requestDevice({
+            acceptAllDevices: true, // 全てのデバイスを対象にスキャンを実施する
+        })
+        .then(device => {
+            // ２．デバイスに接続
+            return device.gatt.connect();
+        })
+        .then(server => {
+            // ３-1．「Service」を指定
+            return server.getPrimaryService("0000fff0-0000-1000-8000-00805f9b34fb");
+        })
+        .then(service => {
+            // ３-2．「Characteristc」を指定
+            return service.getCharacteristic("0000fff1-0000-1000-8000-00805f9b34fb");
+        })
+        .then(characteristic => {
+            //４．受信準備を行う
+            // return characteristic.startNotifications().then(char => {
+            // //５．受信したバイナリを解析、処理の実施
+            // characteristic.addEventListener(
+            //     "characteristicvaluechanged",
+            //     event => {
+            //     // 「event.target.value」がDataView型で渡ってくるのでこれを解析
+            //         console.log("Event Value:",event.target.value);
+            //     }
+            // );
+            // characteristic.startNotifications();//(4)
+
+            // });
+        })
+        .catch(error => console.log(error));
+    }
+    
+    }
+
+var SensorServiceUUID="0000fff0-0000-1000-8000-00805f9b34fb";
+var LatestDataUUID="0000fff1-0000-1000-8000-00805f9b34fb";
+
+    function ble2(){
+        navigator.bluetooth.requestDevice(
+        { acceptAllDevices:true,optionalServices:[SensorServiceUUID] } // (1)
+     ) 
+        .then(device => device.gatt.connect())//(2)
+        .then(server => server.getPrimaryService(SensorServiceUUID))
+        .then(service => service.getCharacteristic(LatestDataUUID))
+        .then(characteristic =>{
+            characteristic.addEventListener('characteristicvaluechanged', event=>{
+                console.log("Event:",event.target)
+            }); //(3)
+            // characteristic.startNotifications();//(4)
+            characteristic.readValue().then(sensorLocationData =>{
+                console.log("sensorLocationData:",sensorLocationData)
+            })
+        })
+        .catch(error => console.log(error));
+
+    }
+</script>
+</head>
+<body>
+<button type="button" onclick="ble2()">Click me</button>
+</body>
+</html>

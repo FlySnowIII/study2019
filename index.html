@@ -6,8 +6,6 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 <title>Document</title>
 <script>
-    "use strict";
-
     var SensorServiceUUID="0000fff0-0000-1000-8000-00805f9b34fb";
     var LatestDataUUID="0000fff4-0000-1000-8000-00805f9b34fb";
     var _device = null;
@@ -22,19 +20,7 @@
         })
         .then(server => server.getPrimaryService(SensorServiceUUID))
         .then(service => service.getCharacteristic(LatestDataUUID))
-        .then(characteristic =>{
-            // console.log('> Characteristic UUID:  ' + characteristic.uuid);
-            // console.log('> Broadcast:            ' + characteristic.properties.broadcast);
-            // console.log('> Read:                 ' + characteristic.properties.read);
-            // console.log('> Write w/o response:   ' + characteristic.properties.writeWithoutResponse);
-            // console.log('> Write:                ' + characteristic.properties.write);
-            // console.log('> Notify:               ' + characteristic.properties.notify);
-            // console.log('> Indicate:             ' + characteristic.properties.indicate);
-            // console.log('> Signed Write:         ' + characteristic.properties.authenticatedSignedWrites);
-            // console.log('> Queued Write:         ' + characteristic.properties.reliableWrite);
-            // console.log('> Writable Auxiliaries: ' + characteristic.properties.writableAuxiliaries);
-            return characteristic.startNotifications();
-        })
+        .then(characteristic => characteristic.startNotifications())
         .then(characteristic => characteristic.addEventListener('characteristicvaluechanged',onBLEDataNotification))
         .catch(error => console.log(error));
     }
@@ -59,7 +45,7 @@
 <body>
 <button type="button" onclick="connect_ble()">Click me</button>
 <br>
-<button type="button" onclick="disconnect()">Disconnect</button>
+<button type="button" onclick="disconnect_ble()">Disconnect</button>
 <br>
 <div id="divShow" style="width:100%">
 aaa
